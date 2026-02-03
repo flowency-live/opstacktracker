@@ -8,7 +8,7 @@ interface SelectOption {
 }
 
 interface EditableFieldProps {
-  value: string | number | null;
+  value: string | number | null | undefined;
   onSave: (value: string | number | null) => Promise<void> | void;
   label: string;
   placeholder?: string;
