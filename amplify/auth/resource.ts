@@ -1,4 +1,4 @@
-import { defineAuth } from '@aws-amplify/backend';
+import { defineAuth, secret } from '@aws-amplify/backend';
 
 /**
  * CohortTrack Authentication Configuration
@@ -6,9 +6,7 @@ import { defineAuth } from '@aws-amplify/backend';
  * Single admin user: jason@flowency.co.uk
  * Provider: Google OAuth
  *
- * Session Settings (Cognito defaults):
- * - Access token: 1 hour
- * - Refresh token: 30 days
+ * Secrets must be set via: npx ampx sandbox secret set GOOGLE_CLIENT_ID
  *
  * @see https://docs.amplify.aws/react/build-a-backend/auth/
  */
@@ -17,8 +15,8 @@ export const auth = defineAuth({
     email: true,
     externalProviders: {
       google: {
-        clientId: process.env.GOOGLE_CLIENT_ID ?? '',
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+        clientId: secret('GOOGLE_CLIENT_ID'),
+        clientSecret: secret('GOOGLE_CLIENT_SECRET'),
         scopes: ['email', 'profile', 'openid'],
         attributeMapping: {
           email: 'email',
