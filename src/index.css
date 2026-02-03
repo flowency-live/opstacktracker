@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dark theme base (MS Teams inspired) */
+:root {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  @apply bg-surface-primary text-text-primary;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+/* RAGB Status indicator styles */
+.status-indicator {
+  @apply w-3 h-3 rounded-full;
+}
+
+.status-red {
+  @apply bg-status-red;
+}
+
+.status-amber {
+  @apply bg-status-amber;
+}
+
+.status-green {
+  @apply bg-status-green;
+}
+
+.status-blue {
+  @apply bg-status-blue;
+}
+
+/* Tree node styles */
+.tree-node {
+  @apply flex items-center gap-2 px-2 py-1.5 rounded hover:bg-surface-hover cursor-pointer;
+}
+
+.tree-node-selected {
+  @apply bg-surface-tertiary;
+}
+
+.tree-node-children {
+  @apply pl-6 border-l border-surface-tertiary ml-2;
+}
+
+/* Inline editor styles */
+.inline-input {
+  @apply bg-transparent border-b border-text-tertiary focus:border-status-blue
+         outline-none text-text-primary px-1;
+}
+
+/* Device count badge */
+.device-badge {
+  @apply text-xs px-1.5 py-0.5 rounded bg-surface-tertiary text-text-secondary;
+}
+
+/* Scrollbar styling (dark theme) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-surface-primary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-surface-tertiary rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-surface-hover;
+}

@@ -1,0 +1,209 @@
+{
+  "organisation": {
+    "name": "British Airways",
+    "children": [
+      {
+        "type": "directorate",
+        "name": "Heathrow Operations (TM)",
+        "contact": "Tom Moran",
+        "headcount": 6419,
+        "status": "red",
+        "children": [
+          {
+            "type": "department",
+            "name": "Baggage and Logistics",
+            "contact": "Laurie Keita",
+            "headcount": 1169,
+            "status": "red",
+            "children": [
+              {
+                "type": "subdepartment",
+                "name": "Logistics",
+                "contact": "Craig Marley",
+                "headcount": 537,
+                "status": "amber",
+                "children": []
+              },
+              {
+                "type": "subdepartment",
+                "name": "Baggage",
+                "contact": "Dean Hughes",
+                "headcount": 627,
+                "status": "red",
+                "children": []
+              }
+            ]
+          },
+          {
+            "type": "department",
+            "name": "Customer Experience",
+            "contact": "Robert Tyrrell",
+            "headcount": 2159,
+            "status": "amber",
+            "children": [
+              {
+                "type": "subdepartment",
+                "name": "Customer Experience",
+                "contact": "Mohammad Bhimani",
+                "headcount": 2159,
+                "status": "amber",
+                "children": []
+              }
+            ]
+          },
+          {
+            "type": "department",
+            "name": "Operational Delivery",
+            "contact": "Bhaven Pancholi",
+            "headcount": 662,
+            "status": "amber",
+            "children": [
+              {
+                "type": "subdepartment",
+                "name": "Allocation Operations",
+                "contact": "Andreea Cristoloveanu",
+                "headcount": 185,
+                "status": "red",
+                "children": []
+              },
+              {
+                "type": "subdepartment",
+                "name": "Airport Operations Control Centre (AOCC)",
+                "contact": "Frankie Farrell",
+                "headcount": 27,
+                "status": "amber",
+                "children": []
+              },
+              {
+                "type": "subdepartment",
+                "name": "Aircraft Dispatch",
+                "contact": "Jamie Stroud",
+                "additionalContacts": ["Andy Brown", "Samantha Major", "Emma Parkes"],
+                "headcount": 248,
+                "status": "amber",
+                "children": []
+              },
+              {
+                "type": "subdepartment",
+                "name": "ARC Flight Control",
+                "contact": "Beverley Burbidge",
+                "headcount": 195,
+                "status": "amber",
+                "children": []
+              }
+            ]
+          },
+          {
+            "type": "department",
+            "name": "Loading",
+            "contact": "Jon Dando",
+            "headcount": 708,
+            "status": "amber",
+            "children": [
+              {
+                "type": "subdepartment",
+                "name": "Loading Operations Delivery",
+                "contact": "Zannah Keegan",
+                "headcount": 700,
+                "status": "amber",
+                "children": []
+              }
+            ]
+          },
+          {
+            "type": "department",
+            "name": "Critical Services",
+            "contact": "David Stonebanks",
+            "headcount": 843,
+            "status": "amber",
+            "children": [
+              {
+                "type": "subdepartment",
+                "name": "Aircraft Movement",
+                "contact": "Anwar Madkour",
+                "headcount": 226,
+                "status": "amber",
+                "children": []
+              },
+              {
+                "type": "subdepartment",
+                "name": "GTS-ACS and Critical Services Op Perf",
+                "contact": "David Mohammed",
+                "headcount": 208,
+                "status": "amber",
+                "children": []
+              },
+              {
+                "type": "subdepartment",
+                "name": "Winter Ops - AEA and GOST",
+                "contact": "Dale Walsh",
+                "headcount": 151,
+                "status": "red",
+                "children": []
+              },
+              {
+                "type": "subdepartment",
+                "name": "Strategic Supplier Account Management",
+                "contact": "Gheyas Khan",
+                "headcount": 159,
+                "status": "red",
+                "children": []
+              }
+            ]
+          },
+          {
+            "type": "department",
+            "name": "Heathrow Support Team",
+            "contact": "Yolandie Richardson",
+            "headcount": 128,
+            "status": "amber",
+            "children": [
+              {
+                "type": "subdepartment",
+                "name": "Heathrow Support Team",
+                "contact": "Jason Francois",
+                "status": "amber",
+                "children": []
+              }
+            ]
+          },
+          {
+            "type": "department",
+            "name": "Heathrow Safety & Security",
+            "contact": "Sarah Bennett",
+            "headcount": 24,
+            "status": "amber",
+            "children": [
+              {
+                "type": "subdepartment",
+                "name": "Heathrow Safety & Security",
+                "contact": "Sarah Bennett",
+                "additionalContacts": ["Harriet Campbell-Westlind", "Matt Brooks", "Tony Crick"],
+                "headcount": 24,
+                "status": "amber",
+                "children": []
+              }
+            ]
+          },
+          {
+            "type": "department",
+            "name": "Terminal 3",
+            "contact": "Rebecca Stephens",
+            "headcount": 717,
+            "status": "red",
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "_meta": {
+    "capturedAt": "2026-02-03",
+    "notes": [
+      "Headcount = number of reports from org chart, NOT device count",
+      "Device counts to be added at cohort level",
+      "Status: red = not engaged, amber = engaged, green = planned, blue = complete"
+    ],
+    "pendingQuestions": []
+  }
+}
