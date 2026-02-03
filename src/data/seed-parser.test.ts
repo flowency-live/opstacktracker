@@ -1,11 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { parseSeedData, flattenHierarchy, type SeedDataNode } from './seed-parser';
-import type { Node } from '../domain/node.schema';
+import { parseSeedData, type SeedData } from './seed-parser';
 
 describe('Seed Data Parser', () => {
   describe('parseSeedData', () => {
     it('parses organisation as root node', () => {
-      const seedData = {
+      const seedData: SeedData = {
         organisation: {
           name: 'British Airways',
           children: [],
@@ -21,7 +20,7 @@ describe('Seed Data Parser', () => {
     });
 
     it('generates UUID for each node', () => {
-      const seedData = {
+      const seedData: SeedData = {
         organisation: {
           name: 'British Airways',
           children: [],
@@ -31,7 +30,7 @@ describe('Seed Data Parser', () => {
       const result = parseSeedData(seedData);
 
       expect(result[0].id).toBeDefined();
-      expect(result[0].id.length).toBeGreaterThan(0);
+      expect(result[0].id!.length).toBeGreaterThan(0);
       // UUID format validation
       expect(result[0].id).toMatch(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -39,7 +38,7 @@ describe('Seed Data Parser', () => {
     });
 
     it('maintains parent-child relationships', () => {
-      const seedData = {
+      const seedData: SeedData = {
         organisation: {
           name: 'British Airways',
           children: [
@@ -65,7 +64,7 @@ describe('Seed Data Parser', () => {
     });
 
     it('parses nested hierarchy correctly', () => {
-      const seedData = {
+      const seedData: SeedData = {
         organisation: {
           name: 'British Airways',
           children: [
@@ -105,7 +104,7 @@ describe('Seed Data Parser', () => {
     });
 
     it('preserves contact information', () => {
-      const seedData = {
+      const seedData: SeedData = {
         organisation: {
           name: 'British Airways',
           children: [
@@ -126,7 +125,7 @@ describe('Seed Data Parser', () => {
     });
 
     it('preserves additional contacts', () => {
-      const seedData = {
+      const seedData: SeedData = {
         organisation: {
           name: 'British Airways',
           children: [
@@ -148,7 +147,7 @@ describe('Seed Data Parser', () => {
     });
 
     it('preserves headcount', () => {
-      const seedData = {
+      const seedData: SeedData = {
         organisation: {
           name: 'British Airways',
           children: [
@@ -169,7 +168,7 @@ describe('Seed Data Parser', () => {
     });
 
     it('preserves status from seed data', () => {
-      const seedData = {
+      const seedData: SeedData = {
         organisation: {
           name: 'British Airways',
           children: [
@@ -190,7 +189,7 @@ describe('Seed Data Parser', () => {
     });
 
     it('defaults status to red if not provided', () => {
-      const seedData = {
+      const seedData: SeedData = {
         organisation: {
           name: 'British Airways',
           children: [
@@ -210,7 +209,7 @@ describe('Seed Data Parser', () => {
     });
 
     it('sets timestamps for all nodes', () => {
-      const seedData = {
+      const seedData: SeedData = {
         organisation: {
           name: 'British Airways',
           children: [],
@@ -230,7 +229,7 @@ describe('Seed Data Parser', () => {
 
   describe('flattenHierarchy', () => {
     it('returns nodes in breadth-first order (parents before children)', () => {
-      const seedData = {
+      const seedData: SeedData = {
         organisation: {
           name: 'British Airways',
           children: [
@@ -260,7 +259,7 @@ describe('Seed Data Parser', () => {
     });
 
     it('handles empty children arrays', () => {
-      const seedData = {
+      const seedData: SeedData = {
         organisation: {
           name: 'British Airways',
           children: [],
@@ -275,7 +274,7 @@ describe('Seed Data Parser', () => {
 
   describe('Validation', () => {
     it('validates all nodes against schema', () => {
-      const seedData = {
+      const seedData: SeedData = {
         organisation: {
           name: 'British Airways',
           children: [

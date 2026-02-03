@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { NodeSchema, NodeType, Status, DeviceType, createNode } from './node.schema';
+import type { NodeType, Status, DeviceType } from './node.schema';
+import { NodeSchema, createNode } from './node.schema';
 
 describe('Node Schema Validation', () => {
   describe('NodeType enum', () => {
@@ -265,7 +266,7 @@ describe('Node Schema Validation', () => {
       });
 
       expect(node.id).toBeDefined();
-      expect(node.id.length).toBeGreaterThan(0);
+      expect(node.id!.length).toBeGreaterThan(0);
     });
 
     it('creates a node with default status red', () => {
@@ -288,8 +289,8 @@ describe('Node Schema Validation', () => {
 
       expect(node.createdAt).toBeDefined();
       expect(node.updatedAt).toBeDefined();
-      expect(node.createdAt >= before).toBe(true);
-      expect(node.createdAt <= after).toBe(true);
+      expect(node.createdAt! >= before).toBe(true);
+      expect(node.createdAt! <= after).toBe(true);
     });
 
     it('creates a node with empty additionalContacts array by default', () => {
