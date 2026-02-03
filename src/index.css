@@ -1,6 +1,24 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* Custom theme colors */
+@theme {
+  /* RAGB status colors (dark theme optimized) */
+  --color-status-red: #ef4444;
+  --color-status-amber: #f59e0b;
+  --color-status-green: #22c55e;
+  --color-status-blue: #3b82f6;
+
+  /* Dark theme background colors (MS Teams inspired) */
+  --color-surface-primary: #1f1f1f;
+  --color-surface-secondary: #292929;
+  --color-surface-tertiary: #333333;
+  --color-surface-hover: #3d3d3d;
+
+  /* Text colors */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #b3b3b3;
+  --color-text-tertiary: #808080;
+}
 
 /* Dark theme base (MS Teams inspired) */
 :root {
