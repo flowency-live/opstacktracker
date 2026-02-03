@@ -114,8 +114,8 @@ describe('HierarchyTree', () => {
         />
       );
 
-      const orgNode = screen.getByText('British Airways').closest('[data-testid="tree-node"]');
-      const toggle = within(orgNode!).getByTestId('expand-toggle');
+      const orgNode = screen.getByText('British Airways').closest('[data-testid="tree-node"]') as HTMLElement;
+      const toggle = within(orgNode).getByTestId('expand-toggle');
       expect(toggle).toBeInTheDocument();
     });
 
@@ -133,8 +133,8 @@ describe('HierarchyTree', () => {
         />
       );
 
-      const node = screen.getByText('Cohort A').closest('[data-testid="tree-node"]');
-      expect(within(node!).queryByTestId('expand-toggle')).not.toBeInTheDocument();
+      const node = screen.getByText('Cohort A').closest('[data-testid="tree-node"]') as HTMLElement;
+      expect(within(node).queryByTestId('expand-toggle')).not.toBeInTheDocument();
     });
   });
 
@@ -188,8 +188,8 @@ describe('HierarchyTree', () => {
         />
       );
 
-      const orgNode = screen.getByText('British Airways').closest('[data-testid="tree-node"]');
-      const toggle = within(orgNode!).getByTestId('expand-toggle');
+      const orgNode = screen.getByText('British Airways').closest('[data-testid="tree-node"]') as HTMLElement;
+      const toggle = within(orgNode).getByTestId('expand-toggle');
 
       await user.click(toggle);
 
@@ -220,8 +220,8 @@ describe('HierarchyTree', () => {
         />
       );
 
-      const orgNode = screen.getByText('British Airways').closest('[data-testid="tree-node"]');
-      const toggle = within(orgNode!).getByTestId('expand-toggle');
+      const orgNode = screen.getByText('British Airways').closest('[data-testid="tree-node"]') as HTMLElement;
+      const toggle = within(orgNode).getByTestId('expand-toggle');
 
       await user.click(toggle);
       await user.click(toggle);
@@ -305,8 +305,8 @@ describe('HierarchyTree', () => {
         />
       );
 
-      const orgNode = screen.getByText('British Airways').closest('[data-testid="tree-node"]');
-      const badge = within(orgNode!).getByTestId('device-badge');
+      const orgNode = screen.getByText('British Airways').closest('[data-testid="tree-node"]') as HTMLElement;
+      const badge = within(orgNode).getByTestId('device-badge');
       expect(badge).toHaveTextContent('75/150');
     });
   });
