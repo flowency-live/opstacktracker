@@ -10,6 +10,7 @@ import { preSignUp } from './pre-sign-up/resource';
  */
 export const auth = defineAuth({
   loginWith: {
+    email: true,
     externalProviders: {
       google: {
         clientId: secret('GOOGLE_CLIENT_ID'),
