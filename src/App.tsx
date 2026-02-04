@@ -161,7 +161,7 @@ type AuthState =
   | { status: 'authenticated'; username: string }
   | { status: 'unauthenticated' };
 
-function LoginPage({ onSignIn }: { onSignIn: () => void }) {
+function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
@@ -270,7 +270,7 @@ function App() {
   }
 
   if (authState.status === 'unauthenticated') {
-    return <LoginPage onSignIn={() => {}} />;
+    return <LoginPage />;
   }
 
   return <AppContent signOut={handleSignOut} />;
