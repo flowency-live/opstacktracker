@@ -119,7 +119,7 @@ describe('HierarchyTree', () => {
       expect(toggle).toBeInTheDocument();
     });
 
-    it('does not show toggle for leaf nodes', () => {
+    it('renders cohorts as ribbon components without expand toggle', () => {
       const leafNode = createNode({
         name: 'Cohort A',
         type: 'cohort',
@@ -133,8 +133,11 @@ describe('HierarchyTree', () => {
         />
       );
 
-      const node = screen.getByText('Cohort A').closest('[data-testid="tree-node"]') as HTMLElement;
-      expect(within(node).queryByTestId('expand-toggle')).not.toBeInTheDocument();
+      // Cohorts render as CohortRibbon, not TreeNode
+      const ribbon = screen.getByText('Cohort A').closest('[data-testid="cohort-ribbon"]');
+      expect(ribbon).toBeInTheDocument();
+      // CohortRibbon has no expand toggle by design
+      expect(within(ribbon as HTMLElement).queryByTestId('expand-toggle')).not.toBeInTheDocument();
     });
   });
 
@@ -308,6 +311,111 @@ describe('HierarchyTree', () => {
       const orgNode = screen.getByText('British Airways').closest('[data-testid="tree-node"]') as HTMLElement;
       const badge = within(orgNode).getByTestId('device-badge');
       expect(badge).toHaveTextContent('75/150');
+    });
+  });
+
+  describe('expand/collapse all', () => {
+    it('has expand all button', () => {
+      const org = createNode({
+        id: 'org-1',
+        name: 'British Airways',
+        type: 'organisation',
+      });
+
+      render(
+        <HierarchyTree
+          nodes={[org]}
+          onSelect={vi.fn()}
+          selectedNodeId={null}
+        />
+      );
+
+      expect(screen.getByTestId('expand-all-btn')).toBeInTheDocument();
+    });
+
+    it('has collapse all button', () => {
+      const org = createNode({
+        id: 'org-1',
+        name: 'British Airways',
+        type: 'organisation',
+      });
+
+      render(
+        <HierarchyTree
+          nodes={[org]}
+          onSelect={vi.fn()}
+          selectedNodeId={null}
+        />
+      );
+
+      expect(screen.getByTestId('collapse-all-btn')).toBeInTheDocument();
+    });
+
+    it('collapse all hides all children', async () => {
+      const user = userEvent.setup();
+
+      const org = createNode({
+        id: 'org-1',
+        name: 'British Airways',
+        type: 'organisation',
+      });
+
+      const directorate = createNode({
+        id: 'dir-1',
+        name: 'Heathrow',
+        type: 'directorate',
+        parentId: 'org-1',
+      });
+
+      render(
+        <HierarchyTree
+          nodes={[org, directorate]}
+          onSelect={vi.fn()}
+          selectedNodeId={null}
+        />
+      );
+
+      // Initially children are visible
+      expect(screen.getByText('Heathrow')).toBeVisible();
+
+      // Click collapse all
+      await user.click(screen.getByTestId('collapse-all-btn'));
+
+      // Children should be hidden
+      expect(screen.queryByText('Heathrow')).not.toBeInTheDocument();
+    });
+
+    it('expand all shows all children after collapse', async () => {
+      const user = userEvent.setup();
+
+      const org = createNode({
+        id: 'org-1',
+        name: 'British Airways',
+        type: 'organisation',
+      });
+
+      const directorate = createNode({
+        id: 'dir-1',
+        name: 'Heathrow',
+        type: 'directorate',
+        parentId: 'org-1',
+      });
+
+      render(
+        <HierarchyTree
+          nodes={[org, directorate]}
+          onSelect={vi.fn()}
+          selectedNodeId={null}
+        />
+      );
+
+      // Collapse all
+      await user.click(screen.getByTestId('collapse-all-btn'));
+      expect(screen.queryByText('Heathrow')).not.toBeInTheDocument();
+
+      // Expand all
+      await user.click(screen.getByTestId('expand-all-btn'));
+      expect(screen.getByText('Heathrow')).toBeVisible();
     });
   });
 

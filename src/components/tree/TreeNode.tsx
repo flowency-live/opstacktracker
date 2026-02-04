@@ -9,6 +9,7 @@ export interface TreeNodeProps {
   aggregatedCompletedCount?: number;
   onToggle: (nodeId: string) => void;
   onSelect: (node: Node) => void;
+  onAddChild?: (node: Node) => void;
 }
 
 /**
@@ -41,6 +42,7 @@ export function TreeNode({
   aggregatedCompletedCount,
   onToggle,
   onSelect,
+  onAddChild,
 }: TreeNodeProps) {
   // Determine device counts to display
   const deviceCount =
@@ -58,6 +60,14 @@ export function TreeNode({
   const handleNodeClick = () => {
     onSelect(node);
   };
+
+  const handleAddClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onAddChild?.(node);
+  };
+
+  // Cohorts cannot have children
+  const canAddChild = node.type !== 'cohort' && onAddChild;
 
   return (
     <div
@@ -100,11 +110,6 @@ export function TreeNode({
       {/* Node Name */}
       <span className="font-medium text-text-primary flex-grow truncate">
         {node.name}
-      </span>
-
-      {/* Node Type Badge */}
-      <span className="text-xs text-text-tertiary px-1.5 py-0.5 rounded bg-surface-secondary">
-        {node.type}
       </span>
 
       {/* Contact Info */}
@@ -158,6 +163,20 @@ export function TreeNode({
           </a>
         )}
       </div>
+
+      {/* Add Child Button */}
+      {canAddChild && (
+        <button
+          data-testid="add-child-button"
+          onClick={handleAddClick}
+          className="w-6 h-6 flex items-center justify-center text-text-tertiary hover:text-accent hover:bg-surface-hover rounded transition-colors"
+          title="Add child node"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+      )}
     </div>
   );
 }

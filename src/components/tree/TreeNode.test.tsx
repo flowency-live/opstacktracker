@@ -43,7 +43,7 @@ describe('TreeNode', () => {
       expect(screen.getByText('Baggage and Logistics')).toBeInTheDocument();
     });
 
-    it('renders node type badge', () => {
+    it('does not render node type badge', () => {
       const node = createMockNode({ type: 'department' });
 
       render(
@@ -56,7 +56,7 @@ describe('TreeNode', () => {
         />
       );
 
-      expect(screen.getByText('department')).toBeInTheDocument();
+      expect(screen.queryByText('department')).not.toBeInTheDocument();
     });
 
     it('displays RAGB color indicator for red status', () => {

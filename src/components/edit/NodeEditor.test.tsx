@@ -259,6 +259,93 @@ describe('NodeEditor', () => {
     });
   });
 
+  describe('editing links', () => {
+    it('shows editable Confluence URL field', async () => {
+      const user = userEvent.setup();
+
+      render(<NodeEditor node={mockDirectorate} onUpdate={mockOnUpdate} />);
+
+      // Find the Confluence link and click to edit
+      const confluenceLink = screen.getByRole('link', { name: /confluence/i });
+      expect(confluenceLink).toHaveAttribute('href', 'https://confluence.ba.com/heathrow');
+
+      // Click edit button (pencil icon next to link)
+      const editButton = confluenceLink.parentElement?.querySelector('[data-testid="edit-confluence-btn"]');
+      expect(editButton).toBeInTheDocument();
+      await user.click(editButton as HTMLElement);
+
+      // Should show input
+      const input = screen.getByPlaceholderText(/confluence url/i);
+      expect(input).toBeInTheDocument();
+    });
+
+    it('allows editing Confluence URL', async () => {
+      const user = userEvent.setup();
+
+      render(<NodeEditor node={mockDirectorate} onUpdate={mockOnUpdate} />);
+
+      // Click edit button
+      const editButton = screen.getByTestId('edit-confluence-btn');
+      await user.click(editButton);
+
+      // Edit the URL
+      const input = screen.getByPlaceholderText(/confluence url/i);
+      await user.clear(input);
+      await user.type(input, 'https://confluence.ba.com/new-page{Enter}');
+
+      await waitFor(() => {
+        expect(mockOnUpdate).toHaveBeenCalledWith('dir-1', {
+          confluenceUrl: 'https://confluence.ba.com/new-page',
+        });
+      });
+    });
+
+    it('allows editing Jira URL', async () => {
+      const user = userEvent.setup();
+
+      render(<NodeEditor node={mockCohort} onUpdate={mockOnUpdate} />);
+
+      // Click edit button
+      const editButton = screen.getByTestId('edit-jira-btn');
+      await user.click(editButton);
+
+      // Edit the URL
+      const input = screen.getByPlaceholderText(/jira url/i);
+      await user.clear(input);
+      await user.type(input, 'https://jira.ba.com/browse/NEW-456{Enter}');
+
+      await waitFor(() => {
+        expect(mockOnUpdate).toHaveBeenCalledWith('coh-1', {
+          jiraUrl: 'https://jira.ba.com/browse/NEW-456',
+        });
+      });
+    });
+
+    it('allows adding new Confluence URL when none exists', async () => {
+      const user = userEvent.setup();
+      const nodeWithoutLinks: Node = {
+        ...mockCohort,
+        confluenceUrl: null,
+      };
+
+      render(<NodeEditor node={nodeWithoutLinks} onUpdate={mockOnUpdate} />);
+
+      // Click add button
+      const addButton = screen.getByTestId('add-confluence-btn');
+      await user.click(addButton);
+
+      // Enter URL
+      const input = screen.getByPlaceholderText(/confluence url/i);
+      await user.type(input, 'https://confluence.ba.com/new{Enter}');
+
+      await waitFor(() => {
+        expect(mockOnUpdate).toHaveBeenCalledWith('coh-1', {
+          confluenceUrl: 'https://confluence.ba.com/new',
+        });
+      });
+    });
+  });
+
   describe('read-only mode', () => {
     it('disables editing when readOnly is true', () => {
       render(

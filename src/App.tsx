@@ -3,9 +3,11 @@ import { Amplify } from 'aws-amplify';
 import { signInWithRedirect, signOut, getCurrentUser } from 'aws-amplify/auth';
 import { Hub } from 'aws-amplify/utils';
 import { HierarchyTree } from './components/tree/HierarchyTree';
+import { AddNodeModal } from './components/tree/AddNodeModal';
 import { NodeEditor } from './components/edit';
 import { SearchFilter } from './components/search';
 import { Dashboard } from './components/dashboard';
+import { OrgChart } from './components/orgchart';
 import { useNodes } from './hooks/useNodes';
 import { useNodeFilter } from './hooks/useNodeFilter';
 import type { Node } from './domain/node.schema';
@@ -14,12 +16,13 @@ import './index.css';
 
 Amplify.configure(outputs);
 
-type ViewTab = 'tree' | 'dashboard';
+type ViewTab = 'tree' | 'orgchart' | 'dashboard';
 
 function AppContent({ signOut }: { signOut?: () => void }) {
-  const { nodes, isLoading, error, refetch, updateNode } = useNodes();
+  const { nodes, isLoading, error, refetch, updateNode, createNode } = useNodes();
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [activeTab, setActiveTab] = useState<ViewTab>('tree');
+  const [addNodeParent, setAddNodeParent] = useState<Node | null>(null);
 
   const {
     filteredNodes,
@@ -42,6 +45,21 @@ function AppContent({ signOut }: { signOut?: () => void }) {
     }
   };
 
+  const handleAddChild = (parentNode: Node) => {
+    setAddNodeParent(parentNode);
+  };
+
+  const handleCreateNode = async (nodeData: {
+    parentId: string;
+    type: Node['type'];
+    name: string;
+    status: 'red';
+    deviceType?: Node['deviceType'];
+  }) => {
+    await createNode(nodeData);
+    setAddNodeParent(null);
+  };
+
   return (
     <div className="min-h-screen bg-surface-primary">
       <header className="bg-surface-secondary border-b border-surface-tertiary px-4 py-3">
@@ -57,7 +75,17 @@ function AppContent({ signOut }: { signOut?: () => void }) {
                     : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
-                Hierarchy
+                Explorer
+              </button>
+              <button
+                onClick={() => setActiveTab('orgchart')}
+                className={`px-3 py-1 text-sm rounded ${
+                  activeTab === 'orgchart'
+                    ? 'bg-surface-hover text-text-primary'
+                    : 'text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                Org Chart
               </button>
               <button
                 onClick={() => setActiveTab('dashboard')}
@@ -87,7 +115,7 @@ function AppContent({ signOut }: { signOut?: () => void }) {
       </header>
 
       <main className="max-w-7xl mx-auto p-4">
-        {activeTab === 'dashboard' ? (
+        {activeTab === 'dashboard' && (
           /* Dashboard View */
           <div className="bg-surface-secondary rounded-lg p-4">
             <h2 className="text-lg font-semibold text-text-primary mb-4">
@@ -95,7 +123,47 @@ function AppContent({ signOut }: { signOut?: () => void }) {
             </h2>
             <Dashboard nodes={nodes} />
           </div>
-        ) : (
+        )}
+
+        {activeTab === 'orgchart' && (
+          /* Org Chart View */
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-2">
+              <div className="bg-surface-secondary rounded-lg p-4">
+                <h2 className="text-lg font-semibold text-text-primary mb-4">
+                  Organisation Chart
+                </h2>
+                <OrgChart
+                  nodes={nodes}
+                  onSelect={handleSelect}
+                  selectedNodeId={selectedNode?.id ?? null}
+                  isLoading={isLoading}
+                  error={error}
+                />
+              </div>
+            </div>
+
+            <div>
+              {selectedNode ? (
+                <div
+                  data-testid="node-detail-panel"
+                  className="p-4 bg-surface-secondary rounded-lg"
+                >
+                  <NodeEditor
+                    node={selectedNode}
+                    onUpdate={handleUpdateNode}
+                  />
+                </div>
+              ) : (
+                <div className="p-4 bg-surface-secondary rounded-lg text-text-tertiary text-center">
+                  Select a node to view details
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'tree' && (
           /* Tree View */
           <>
             {/* Search and Filter Bar */}
@@ -124,6 +192,7 @@ function AppContent({ signOut }: { signOut?: () => void }) {
                   <HierarchyTree
                     nodes={filteredNodes}
                     onSelect={handleSelect}
+                    onAddChild={handleAddChild}
                     selectedNodeId={selectedNode?.id ?? null}
                     isLoading={isLoading}
                     error={error}
@@ -152,6 +221,14 @@ function AppContent({ signOut }: { signOut?: () => void }) {
           </>
         )}
       </main>
+
+      <AddNodeModal
+        isOpen={addNodeParent !== null}
+        parentType={addNodeParent?.type ?? 'organisation'}
+        parentId={addNodeParent?.id ?? ''}
+        onClose={() => setAddNodeParent(null)}
+        onCreate={handleCreateNode}
+      />
     </div>
   );
 }

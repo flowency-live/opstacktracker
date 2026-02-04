@@ -1,15 +1,13 @@
 import { useState, useMemo } from 'react';
 import type { Node } from '../../domain/node.schema';
-import { TreeNode } from './TreeNode';
-import { CohortRibbon } from './CohortRibbon';
+import { OrgChartCard } from './OrgChartCard';
 
-export interface HierarchyTreeProps {
+export interface OrgChartProps {
   nodes: Node[];
   onSelect: (node: Node) => void;
   selectedNodeId: string | null;
   isLoading?: boolean;
   error?: string | null;
-  onAddChild?: (parentNode: Node) => void;
 }
 
 interface AggregatedCounts {
@@ -17,11 +15,6 @@ interface AggregatedCounts {
   completedCount: number;
 }
 
-/**
- * Calculate aggregated device counts for each node
- *
- * Recursively sums device counts from all descendant cohorts.
- */
 function calculateAggregatedCounts(
   nodes: Node[],
   childrenMap: Map<string | null, Node[]>
@@ -64,25 +57,20 @@ function calculateAggregatedCounts(
   return result;
 }
 
-/**
- * HierarchyTree Component
- *
- * Renders a hierarchical tree of nodes with:
- * - Expand/collapse functionality
- * - Node selection
- * - Aggregated device counts
- * - Loading and error states
- */
-export function HierarchyTree({
+export function OrgChart({
   nodes,
   onSelect,
   selectedNodeId,
   isLoading = false,
   error = null,
-  onAddChild,
-}: HierarchyTreeProps) {
+}: OrgChartProps) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() => {
-    return new Set(nodes.map((n) => n.id).filter((id): id is string => id !== undefined));
+    return new Set(
+      nodes
+        .filter((n) => n.type !== 'cohort')
+        .map((n) => n.id)
+        .filter((id): id is string => id !== undefined)
+    );
   });
 
   const childrenMap = useMemo(() => {
@@ -113,18 +101,6 @@ export function HierarchyTree({
     });
   };
 
-  const handleExpandAll = () => {
-    const allIds = nodes
-      .filter((n) => n.id && n.type !== 'cohort')
-      .map((n) => n.id)
-      .filter((id): id is string => id !== undefined);
-    setExpandedIds(new Set(allIds));
-  };
-
-  const handleCollapseAll = () => {
-    setExpandedIds(new Set());
-  };
-
   if (isLoading) {
     return (
       <div data-testid="loading-indicator" className="flex items-center justify-center p-8">
@@ -150,46 +126,46 @@ export function HierarchyTree({
     );
   }
 
-  const renderNode = (node: Node, depth: number = 0): React.ReactNode => {
+  const renderNode = (node: Node): React.ReactNode => {
     if (!node.id) return null;
 
     const children = childrenMap.get(node.id) ?? [];
-    const hasChildren = children.length > 0;
+    const nonCohortChildren = children.filter((c) => c.type !== 'cohort');
     const isExpanded = expandedIds.has(node.id);
     const isSelected = selectedNodeId === node.id;
+    const aggregated = aggregatedCounts.get(node.id) ?? { deviceCount: 0, completedCount: 0 };
 
-    const aggregated = aggregatedCounts.get(node.id);
-
-    // Cohorts render as ribbons
+    // Don't render cohorts as cards in org chart
     if (node.type === 'cohort') {
-      return (
-        <div key={node.id} style={{ marginLeft: depth * 12 }}>
-          <CohortRibbon
-            node={node}
-            isSelected={isSelected}
-            onSelect={onSelect}
-          />
-        </div>
-      );
+      return null;
     }
 
     return (
-      <div key={node.id} style={{ marginLeft: depth * 12 }}>
-        <TreeNode
+      <div key={node.id} className="flex flex-col items-center">
+        <OrgChartCard
           node={node}
+          childCount={children.length}
+          aggregatedDeviceCount={aggregated.deviceCount}
+          aggregatedCompletedCount={aggregated.completedCount}
           isExpanded={isExpanded}
-          hasChildren={hasChildren}
           isSelected={isSelected}
-          aggregatedDeviceCount={aggregated?.deviceCount}
-          aggregatedCompletedCount={aggregated?.completedCount}
           onToggle={handleToggle}
           onSelect={onSelect}
-          onAddChild={onAddChild}
         />
 
-        {hasChildren && isExpanded && (
-          <div className="tree-node-children">
-            {children.map((child) => renderNode(child, depth + 1))}
+        {/* Vertical connector line */}
+        {nonCohortChildren.length > 0 && isExpanded && (
+          <div className="w-px h-4 bg-surface-tertiary" />
+        )}
+
+        {/* Children row */}
+        {nonCohortChildren.length > 0 && isExpanded && (
+          <div className="flex flex-wrap justify-center gap-4">
+            {/* Horizontal connector for multiple children */}
+            {nonCohortChildren.length > 1 && (
+              <div className="absolute w-full h-px bg-surface-tertiary" style={{ top: -8 }} />
+            )}
+            {nonCohortChildren.map((child) => renderNode(child))}
           </div>
         )}
       </div>
@@ -199,26 +175,10 @@ export function HierarchyTree({
   const rootNodes = childrenMap.get(null) ?? [];
 
   return (
-    <div className="space-y-1">
-      {/* Expand/Collapse All Controls */}
-      <div className="flex justify-end gap-2 mb-2">
-        <button
-          data-testid="expand-all-btn"
-          onClick={handleExpandAll}
-          className="px-2 py-1 text-xs text-text-secondary hover:text-text-primary bg-surface-tertiary hover:bg-surface-hover rounded transition-colors"
-        >
-          Expand All
-        </button>
-        <button
-          data-testid="collapse-all-btn"
-          onClick={handleCollapseAll}
-          className="px-2 py-1 text-xs text-text-secondary hover:text-text-primary bg-surface-tertiary hover:bg-surface-hover rounded transition-colors"
-        >
-          Collapse All
-        </button>
+    <div className="overflow-auto p-4">
+      <div className="flex flex-col items-center gap-4">
+        {rootNodes.map((node) => renderNode(node))}
       </div>
-
-      {rootNodes.map((node) => renderNode(node))}
     </div>
   );
 }
