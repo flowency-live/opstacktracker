@@ -11,7 +11,6 @@ const createNode = (overrides: Partial<Node> = {}): Node => ({
   status: 'amber',
   contact: null,
   additionalContacts: [],
-  contactEmail: null,
   headcount: null,
   deviceType: null,
   deviceCount: null,

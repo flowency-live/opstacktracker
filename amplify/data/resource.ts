@@ -34,7 +34,6 @@ const schema = a.schema({
       // Contact info
       contact: a.string(),
       additionalContacts: a.string().array(),
-      contactEmail: a.string(),
 
       // Reference (org chart headcount, NOT device count)
       headcount: a.integer(),

@@ -11,7 +11,6 @@ const createCohortNode = (overrides: Partial<Node> = {}): Node => ({
   status: 'amber',
   contact: 'John Smith',
   additionalContacts: [],
-  contactEmail: 'john@example.com',
   headcount: null,
   deviceType: 'laptop',
   deviceCount: 50,

@@ -11,8 +11,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "sandbox": "npx ampx sandbox",
-    "sandbox:delete": "npx ampx sandbox delete"
+    "seed": "npx tsx scripts/import-seed-dynamo.ts"
   },
   "dependencies": {
     "@aws-amplify/backend": "^1.20.0",

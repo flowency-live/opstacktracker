@@ -11,7 +11,6 @@ const createMockNode = (overrides: Partial<Node> = {}): Node => ({
   status: 'amber',
   contact: 'John Smith',
   additionalContacts: [],
-  contactEmail: 'john@example.com',
   headcount: 150,
   deviceType: null,
   deviceCount: null,

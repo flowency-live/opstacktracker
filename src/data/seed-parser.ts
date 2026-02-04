@@ -92,7 +92,6 @@ function createNodeFromSeed(
     status: seedNode.status ?? 'red',
     contact: seedNode.contact ?? null,
     additionalContacts: seedNode.additionalContacts ?? [],
-    contactEmail: null,
     headcount: seedNode.headcount ?? null,
     deviceType: null,
     deviceCount: null,

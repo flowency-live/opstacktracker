@@ -12,7 +12,6 @@ interface CreateNodeInput {
   status: Status;
   contact?: string | null;
   additionalContacts?: string[];
-  contactEmail?: string | null;
   headcount?: number | null;
   deviceType?: DeviceType | null;
   deviceCount?: number | null;
@@ -28,7 +27,6 @@ interface UpdateNodeInput {
   status?: Status;
   contact?: string | null;
   additionalContacts?: string[];
-  contactEmail?: string | null;
   headcount?: number | null;
   deviceType?: DeviceType | null;
   deviceCount?: number | null;
@@ -107,7 +105,6 @@ export function useNodes(): UseNodesResult {
         status: input.status,
         contact: input.contact ?? null,
         additionalContacts: input.additionalContacts ?? [],
-        contactEmail: input.contactEmail ?? null,
         headcount: input.headcount ?? null,
         deviceType: input.deviceType ?? null,
         deviceCount: input.deviceCount ?? null,

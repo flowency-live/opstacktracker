@@ -19,7 +19,7 @@ Amplify.configure(outputs);
 type ViewTab = 'tree' | 'orgchart' | 'dashboard';
 
 function AppContent({ signOut }: { signOut?: () => void }) {
-  const { nodes, isLoading, error, refetch, updateNode, createNode } = useNodes();
+  const { nodes, isLoading, error, refetch, updateNode, createNode, deleteNode } = useNodes();
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [activeTab, setActiveTab] = useState<ViewTab>('tree');
   const [addNodeParent, setAddNodeParent] = useState<Node | null>(null);
@@ -53,11 +53,18 @@ function AppContent({ signOut }: { signOut?: () => void }) {
     parentId: string;
     type: Node['type'];
     name: string;
-    status: 'red';
+    status: 'red' | 'amber';
     deviceType?: Node['deviceType'];
   }) => {
     await createNode(nodeData);
     setAddNodeParent(null);
+  };
+
+  const handleDeleteNode = async (id: string) => {
+    await deleteNode(id);
+    if (selectedNode?.id === id) {
+      setSelectedNode(null);
+    }
   };
 
   return (
@@ -152,6 +159,7 @@ function AppContent({ signOut }: { signOut?: () => void }) {
                   <NodeEditor
                     node={selectedNode}
                     onUpdate={handleUpdateNode}
+                    onDelete={handleDeleteNode}
                   />
                 </div>
               ) : (
@@ -209,6 +217,7 @@ function AppContent({ signOut }: { signOut?: () => void }) {
                     <NodeEditor
                       node={selectedNode}
                       onUpdate={handleUpdateNode}
+                      onDelete={handleDeleteNode}
                     />
                   </div>
                 ) : (

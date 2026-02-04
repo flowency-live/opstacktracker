@@ -252,16 +252,24 @@ DynamoDB point-in-time recovery (PITR) - no additional backup strategy needed.
 
 ## Amplify Gen 2 Setup
 
+**Production-only workflow** - no sandbox environment.
+
 ```bash
-# Initialize (if not already done)
-npm create amplify@latest
+# Deploy via CI/CD (triggered by push to main)
+git push origin main
 
-# Local development
-npx ampx sandbox
+# Seed data to production (one-time, after finding table name in AWS Console)
+npm run seed -- --table <TABLE_NAME>
 
-# Deploy to cloud
-npx ampx pipeline-deploy --branch main
+# Example:
+npm run seed -- --table Node-abc123def-main --clear
 ```
+
+### Finding the DynamoDB Table Name
+
+1. Go to AWS Console > DynamoDB > Tables
+2. Look for table starting with `Node-` followed by your Amplify app ID
+3. Use this name with the seed script
 
 ### amplify/data/resource.ts (Example)
 

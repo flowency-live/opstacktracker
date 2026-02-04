@@ -42,7 +42,7 @@ describe('AddNodeModal', () => {
   });
 
   describe('type filtering by parent', () => {
-    it('shows directorate option for organisation parent', () => {
+    it('shows directorate and cohort options for organisation parent', () => {
       render(
         <AddNodeModal
           isOpen={true}
@@ -54,11 +54,11 @@ describe('AddNodeModal', () => {
       );
 
       expect(screen.getByText('Directorate')).toBeInTheDocument();
+      expect(screen.getByText('Cohort')).toBeInTheDocument();
       expect(screen.queryByText('Department')).not.toBeInTheDocument();
-      expect(screen.queryByText('Cohort')).not.toBeInTheDocument();
     });
 
-    it('shows department option for directorate parent', () => {
+    it('shows department and cohort options for directorate parent', () => {
       render(
         <AddNodeModal
           isOpen={true}
@@ -70,6 +70,7 @@ describe('AddNodeModal', () => {
       );
 
       expect(screen.getByText('Department')).toBeInTheDocument();
+      expect(screen.getByText('Cohort')).toBeInTheDocument();
       expect(screen.queryByText('Directorate')).not.toBeInTheDocument();
     });
 
@@ -199,7 +200,7 @@ describe('AddNodeModal', () => {
           parentId: 'subdept-1',
           type: 'cohort',
           name: 'Laptop Users',
-          status: 'red',
+          status: 'amber',
           deviceType: 'laptop',
         });
       });

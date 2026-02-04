@@ -121,10 +121,8 @@ describe('Node Schema Validation', () => {
         name: 'Test',
         status: 'red',
         contact: null,
-        contactEmail: null,
       });
       expect(result.contact).toBeNull();
-      expect(result.contactEmail).toBeNull();
     });
 
     it('allows additionalContacts to be an empty array', () => {
@@ -312,7 +310,6 @@ describe('Node Schema Validation', () => {
 
       expect(node.parentId).toBeNull();
       expect(node.contact).toBeNull();
-      expect(node.contactEmail).toBeNull();
       expect(node.headcount).toBeNull();
       expect(node.deviceType).toBeNull();
       expect(node.deviceCount).toBeNull();

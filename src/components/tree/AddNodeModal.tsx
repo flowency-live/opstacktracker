@@ -13,16 +13,17 @@ interface CreateNodeData {
   parentId: string;
   type: NodeType;
   name: string;
-  status: 'red';
+  status: 'red' | 'amber';
   deviceType?: DeviceType;
 }
 
 /**
- * Maps parent type to allowed child types
+ * Maps parent type to allowed child types.
+ * Cohorts can be added at any level (except under another cohort).
  */
 const allowedChildTypes: Record<NodeType, NodeType[]> = {
-  organisation: ['directorate'],
-  directorate: ['department'],
+  organisation: ['directorate', 'cohort'],
+  directorate: ['department', 'cohort'],
   department: ['subdepartment', 'cohort'],
   subdepartment: ['cohort'],
   cohort: [], // Cohorts cannot have children
@@ -84,7 +85,7 @@ export function AddNodeModal({
       parentId,
       type: selectedType,
       name: name.trim(),
-      status: 'red',
+      status: isCohort ? 'amber' : 'red',
     };
 
     if (isCohort) {

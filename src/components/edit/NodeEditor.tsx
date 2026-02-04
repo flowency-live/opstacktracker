@@ -5,6 +5,7 @@ import { EditableField } from './EditableField';
 interface NodeEditorProps {
   node: Node;
   onUpdate: (id: string, updates: Partial<Node>) => Promise<void>;
+  onDelete?: (id: string) => Promise<void>;
   readOnly?: boolean;
 }
 
@@ -176,9 +177,23 @@ function EditableLink({
   );
 }
 
-export function NodeEditor({ node, onUpdate, readOnly = false }: NodeEditorProps) {
+export function NodeEditor({ node, onUpdate, onDelete, readOnly = false }: NodeEditorProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
   const handleUpdate = async (field: keyof Node, value: string | number | null) => {
     await onUpdate(node.id ?? '', { [field]: value });
+  };
+
+  const handleDelete = async () => {
+    if (!onDelete || !node.id) return;
+    setIsDeleting(true);
+    try {
+      await onDelete(node.id);
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
   };
 
   const isCohort = node.type === 'cohort';
@@ -236,22 +251,6 @@ export function NodeEditor({ node, onUpdate, readOnly = false }: NodeEditorProps
           />
         )}
       </FieldRow>
-
-      {/* Contact Email */}
-      {(node.contactEmail || !readOnly) && (
-        <FieldRow label="Email">
-          {readOnly ? (
-            <ReadOnlyValue value={node.contactEmail} />
-          ) : (
-            <EditableField
-              value={node.contactEmail}
-              onSave={(value) => handleUpdate('contactEmail', value)}
-              label="Email"
-              placeholder="Add email..."
-            />
-          )}
-        </FieldRow>
-      )}
 
       {/* Headcount (for non-cohort nodes) */}
       {!isCohort && (
@@ -378,6 +377,42 @@ export function NodeEditor({ node, onUpdate, readOnly = false }: NodeEditorProps
           />
         )}
       </FieldRow>
+
+      {/* Delete Button */}
+      {!readOnly && onDelete && (
+        <div className="pt-4 border-t border-surface-tertiary">
+          {showDeleteConfirm ? (
+            <div className="space-y-2">
+              <p className="text-sm text-status-red">
+                Are you sure you want to delete this {nodeTypeLabels[node.type].toLowerCase()}?
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="px-3 py-1.5 text-sm bg-status-red text-white rounded hover:opacity-90 disabled:opacity-50"
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete'}
+                </button>
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={isDeleting}
+                  className="px-3 py-1.5 text-sm text-text-secondary hover:text-text-primary"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="text-sm text-status-red hover:underline"
+            >
+              Delete {nodeTypeLabels[node.type].toLowerCase()}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

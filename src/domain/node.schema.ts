@@ -52,7 +52,6 @@ export const BaseNodeSchema = z.object({
   // Contact info
   contact: z.string().nullable().optional(),
   additionalContacts: z.array(z.string()).optional(),
-  contactEmail: z.string().email().nullable().optional(),
 
   // Reference (org chart headcount, NOT device count)
   headcount: z.number().int().nonnegative().nullable().optional(),
@@ -110,7 +109,6 @@ export const CreateNodeInputSchema = BaseNodeSchema.omit({
   parentId: true,
   contact: true,
   additionalContacts: true,
-  contactEmail: true,
   headcount: true,
   deviceType: true,
   deviceCount: true,
@@ -137,7 +135,6 @@ export function createNode(input: CreateNodeInput): Node {
     status: input.status ?? 'red',
     contact: input.contact ?? null,
     additionalContacts: input.additionalContacts ?? [],
-    contactEmail: input.contactEmail ?? null,
     headcount: input.headcount ?? null,
     deviceType: input.deviceType ?? null,
     deviceCount: input.deviceCount ?? null,
