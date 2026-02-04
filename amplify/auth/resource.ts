@@ -1,15 +1,15 @@
 import { defineAuth, secret } from '@aws-amplify/backend';
+import { preSignUp } from './pre-sign-up/resource';
 
 /**
  * CohortTrack Authentication Configuration
  *
- * Google OAuth for BA/Flowency users
+ * Google OAuth restricted to jason@flowency.co.uk
  *
  * @see https://docs.amplify.aws/react/build-a-backend/auth/concepts/external-identity-providers/
  */
 export const auth = defineAuth({
   loginWith: {
-    email: true,
     externalProviders: {
       google: {
         clientId: secret('GOOGLE_CLIENT_ID'),
@@ -25,5 +25,8 @@ export const auth = defineAuth({
         'https://tracker.opstack.uk/',
       ],
     },
+  },
+  triggers: {
+    preSignUp,
   },
 });

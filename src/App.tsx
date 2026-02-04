@@ -161,6 +161,7 @@ function App() {
     <Authenticator
       socialProviders={['google']}
       variation="modal"
+      hideSignUp={true}
     >
       {({ signOut }) => <AppContent signOut={signOut} />}
     </Authenticator>
