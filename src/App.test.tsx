@@ -60,9 +60,15 @@ vi.mock('aws-amplify', () => ({
 }));
 
 vi.mock('aws-amplify/auth', () => ({
-  signIn: vi.fn().mockResolvedValue({}),
+  signInWithRedirect: vi.fn().mockResolvedValue({}),
   signOut: vi.fn().mockResolvedValue({}),
-  getCurrentUser: vi.fn().mockResolvedValue({ userId: 'test-user' }),
+  getCurrentUser: vi.fn().mockResolvedValue({ username: 'test-user' }),
+}));
+
+vi.mock('aws-amplify/utils', () => ({
+  Hub: {
+    listen: vi.fn().mockReturnValue(() => {}),
+  },
 }));
 
 describe('App', () => {
@@ -71,7 +77,7 @@ describe('App', () => {
   });
 
   describe('loading state', () => {
-    it('shows loading indicator while fetching', () => {
+    it('shows loading indicator while fetching', async () => {
       mockUseNodes.mockReturnValue({
         nodes: [],
         isLoading: true,
@@ -84,12 +90,14 @@ describe('App', () => {
 
       render(<App />);
 
-      expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
+      });
     });
   });
 
   describe('error state', () => {
-    it('shows error message when fetch fails', () => {
+    it('shows error message when fetch fails', async () => {
       mockUseNodes.mockReturnValue({
         nodes: [],
         isLoading: false,
@@ -102,12 +110,14 @@ describe('App', () => {
 
       render(<App />);
 
-      expect(screen.getByText(/failed to fetch nodes/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/failed to fetch nodes/i)).toBeInTheDocument();
+      });
     });
   });
 
   describe('tree display', () => {
-    it('renders the hierarchy tree with nodes', () => {
+    it('renders the hierarchy tree with nodes', async () => {
       mockUseNodes.mockReturnValue({
         nodes: mockNodes,
         isLoading: false,
@@ -120,11 +130,13 @@ describe('App', () => {
 
       render(<App />);
 
-      expect(screen.getByText('British Airways')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('British Airways')).toBeInTheDocument();
+      });
       expect(screen.getByText('Heathrow Operations')).toBeInTheDocument();
     });
 
-    it('displays app header', () => {
+    it('displays app header', async () => {
       mockUseNodes.mockReturnValue({
         nodes: mockNodes,
         isLoading: false,
@@ -137,7 +149,9 @@ describe('App', () => {
 
       render(<App />);
 
-      expect(screen.getByText(/cohorttrack/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/cohorttrack/i)).toBeInTheDocument();
+      });
     });
   });
 
@@ -156,6 +170,10 @@ describe('App', () => {
       });
 
       render(<App />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Heathrow Operations')).toBeInTheDocument();
+      });
 
       await user.click(screen.getByText('Heathrow Operations'));
 
