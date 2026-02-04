@@ -1,15 +1,29 @@
-import { defineAuth } from '@aws-amplify/backend';
+import { defineAuth, secret } from '@aws-amplify/backend';
 
 /**
  * CohortTrack Authentication Configuration
  *
- * Single admin user: jason@flowency.co.uk
- * Using email/password auth for now - Google OAuth can be added later
+ * Google OAuth for BA/Flowency users
  *
- * @see https://docs.amplify.aws/react/build-a-backend/auth/
+ * @see https://docs.amplify.aws/react/build-a-backend/auth/concepts/external-identity-providers/
  */
 export const auth = defineAuth({
   loginWith: {
     email: true,
+    externalProviders: {
+      google: {
+        clientId: secret('GOOGLE_CLIENT_ID'),
+        clientSecret: secret('GOOGLE_CLIENT_SECRET'),
+        scopes: ['profile', 'email'],
+      },
+      callbackUrls: [
+        'http://localhost:5173/',
+        'https://tracker.opstack.uk/',
+      ],
+      logoutUrls: [
+        'http://localhost:5173/',
+        'https://tracker.opstack.uk/',
+      ],
+    },
   },
 });

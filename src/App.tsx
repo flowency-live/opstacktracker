@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Amplify } from 'aws-amplify';
+import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
 import { HierarchyTree } from './components/tree/HierarchyTree';
 import { NodeEditor } from './components/edit';
 import { SearchFilter } from './components/search';
@@ -14,7 +16,7 @@ Amplify.configure(outputs);
 
 type ViewTab = 'tree' | 'dashboard';
 
-function App() {
+function AppContent({ signOut }: { signOut?: () => void }) {
   const { nodes, isLoading, error, refetch, updateNode } = useNodes();
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [activeTab, setActiveTab] = useState<ViewTab>('tree');
@@ -35,7 +37,6 @@ function App() {
 
   const handleUpdateNode = async (id: string, updates: Partial<Node>) => {
     await updateNode(id, updates);
-    // Update selected node if it was edited
     if (selectedNode?.id === id) {
       setSelectedNode((prev) => (prev ? { ...prev, ...updates } : null));
     }
@@ -47,7 +48,6 @@ function App() {
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <h1 className="text-xl font-semibold text-text-primary">CohortTrack</h1>
           <div className="flex items-center gap-3">
-            {/* Tab Switcher */}
             <div className="flex bg-surface-tertiary rounded-lg p-1">
               <button
                 onClick={() => setActiveTab('tree')}
@@ -75,6 +75,12 @@ function App() {
               className="px-3 py-1.5 text-sm bg-surface-tertiary hover:bg-surface-hover rounded text-text-secondary"
             >
               Refresh
+            </button>
+            <button
+              onClick={signOut}
+              className="px-3 py-1.5 text-sm bg-status-red/20 hover:bg-status-red/30 rounded text-status-red"
+            >
+              Sign Out
             </button>
           </div>
         </div>
@@ -147,6 +153,17 @@ function App() {
         )}
       </main>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Authenticator
+      socialProviders={['google']}
+      variation="modal"
+    >
+      {({ signOut }) => <AppContent signOut={signOut} />}
+    </Authenticator>
   );
 }
 
